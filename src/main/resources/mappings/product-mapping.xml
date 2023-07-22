@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">	
+
+<mapper namespace="ProductDao">
+
+   <resultMap type="product" id="productResult">
+      <result property="product_imgStr" column="product_img" />
+   </resultMap>
+	
+	<!--상품등록에서 사용  -->
+	<insert id="PRODUTINSERT" parameterType="product">
+		<selectKey keyProperty="product_id" resultType="int" order="BEFORE">
+			select seq_productTKD.NEXTVAL FROM DUAL
+		</selectKey>
+		insert into productTKD(pidx,product_id,product_name,product_price,product_desc,product_img)
+		values(#{product_id},#{product_name},#{product_price},#{product_desc},#{product_imgStr})
+	</insert>
+	
+	<!-- 상품 상세보기 -->
+	<select id="PRODUTGETONE" resultMap="productResult" parameterType="product">
+		select * from productTKD where product_id=#{product_id}
+	</select>
+	
+	<!-- 매니저 상품수정하기 -->
+	<update id="PRODUCTEDIT" parameterType="product">
+		update productTKD set product_name = #{product_name}, 
+		product_price = #{product_price}, product_desc = #{product_desc}, product_img = #{product_imgStr} 
+		where product_id = #{product_id}
+	</update>
+	
+		<!--상품 장바구니로입력할때 사용  -->
+	<insert id="CARTINSERT" parameterType="product">
+		insert into cart(product_id,product_name,product_price,amount)
+		values(#{product_id},#{product_name},#{product_price},#{amount})
+	</insert>
+	
+	<!-- 상품 수정하기 사진있고-->
+	<update id="PRODUTEDIT1" parameterType="product">
+		update productTKD set product_name=#{product_name}, 
+		product_price=#{product_price},product_desc=#{product_desc}
+		where product_id=#{product_id}
+	</update>
+	
+	<!-- 상품 수정하기 사진없고-->
+	<update id="PRODUTEDIT2" parameterType="product">
+		update productTKD set product_name=#{product_name}, 
+		product_price=#{product_price},product_imgStr=#{product_imgStr},product_desc=#{product_desc}
+		where product_id=#{product_id}
+	</update>
+	
+	<select id="TOTALCOUNT" resultType="int">
+		select count(*) from productTKD
+	</select>
+	
+	   <!--market list에서 사용  -->
+	<select id="PRODUTLISTALL" resultMap="productResult">
+		select  ROWNUM, Q.*   from ( select  ROWNUM  as RNUM, K.*  from ( 
+       select  product_id, product_name, product_price, product_desc, product_img
+       from productTKD order  by  product_id ) K
+       <![CDATA[   
+    	where rownum <=8 )Q where RNUM >=1
+    	]]>  
+   </select>
+   
+   
+	<delete id="PODUCTDELETE" parameterType="product" >
+		delete from productTKD where product_id=#{product_id}
+	</delete>
+	
+	
+</mapper>

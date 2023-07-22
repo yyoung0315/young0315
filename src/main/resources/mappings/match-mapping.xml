@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">	
+
+<mapper namespace="MatchDao">
+
+   
+		<!--매칭테이블 입력할때 사용  -->
+	<insert id="MATCHINSERT" parameterType="match">
+		insert into match
+		(midx,tuser_id,tuser_gender, tuser_learnday,tuser_time, tuser_addr,
+		luser_id,luser_gender, luser_learnday, luser_time, luser_addr)
+		values(seq_match.nextval,#{tuser_id}, #{tuser_gender},#{tuser_learnday},
+		#{tuser_time},#{tuser_addr},#{luser_id},#{luser_gender},#{luser_learnday},#{luser_time},#{luser_addr})
+	</insert>
+	
+	<!--인설트전에 사용 -->
+	<select id="MATCH_GETONE" resultType="match" parameterType="match">
+		select * from tuserTKD where tuser_id=#{tuser_id} 
+	</select>
+	
+	<select id="MATCH_LIST" resultType="match" >
+		select * from match order by match_day
+	</select>
+</mapper>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">	
+	
+<mapper namespace="UsertkdDao">
+
+ 	<!--회원가입에서 사용 -->
+	<insert id="LUSERTKD_INSERT" parameterType="lusertkd">
+	<selectKey keyProperty="lidx" resultType="int" order="BEFORE">
+		select seq_lusertkd_user.NEXTVAL from dual
+	</selectKey>
+		insert into luserTKD(lidx,luser_id,luser_name,luser_password,luser_gender,luser_learnday,luser_time,luser_phone,luser_addr,luser_etc)
+		values(#{lidx},#{luser_id},#{luser_name},#{luser_password},#{luser_gender},#{luser_learnday},#{luser_time},#{luser_phone},#{luser_addr},#{luser_etc})
+	</insert>
+	
+	<!--회원가입에서 사용 -->
+	<insert id="TUSERTKD_INSERT" parameterType="tusertkd">
+	<selectKey keyProperty="tidx" resultType="int" order="BEFORE">
+		select seq_tusertkd_user.NEXTVAL from dual
+	</selectKey>
+		insert into tuserTKD(tidx,tuser_id,tuser_name,tuser_password,tuser_gender,tuser_learnday,tuser_time,tuser_phone,tuser_addr,tuser_etc)
+		values(#{tidx},#{tuser_id},#{tuser_name},#{tuser_password},#{tuser_gender},#{tuser_learnday},#{tuser_time},#{tuser_phone},#{tuser_addr},#{tuser_etc})
+	</insert>
+	
+	
+	<!--로그인에서 사용 -->
+	<select id="LUSERTKD_LOGIN" parameterType="lusertkd" resultType="lusertkd">
+		select * from luserTKD where luser_id=#{luser_id} and luser_password=#{luser_password}
+	</select>
+	<!--로그인에서 사용 -->
+	<select id="TUSERTKD_LOGIN" parameterType="tusertkd" resultType="tusertkd">
+		select * from tuserTKD where tuser_id=#{tuser_id} and tuser_password=#{tuser_password}
+	</select>
+		
+	<!--리스트에서사용 -->
+	<select id="LUSERTKD_LIST" resultType="lusertkd" parameterType="lusertkd">
+		select * from luserTKD
+	</select>
+	
+	<!--리스트에서사용 -->
+	<select id="TUSERTKD_LIST" resultType="tusertkd" parameterType="tusertkd">
+		select * from tuserTKD
+	</select>
+
+	<!--리스트상세에서사용 -->
+	<select id="LUSER_GETONE" resultType="lusertkd" parameterType="lusertkd">
+		select * from luserTKD where luser_id=#{luser_id}
+	</select>
+	
+	<!--리스트상세지도에서사용 -->
+	<select id="LADDR_GETONE" resultType="lusertkd" parameterType="lusertkd">
+		select m.metronew from addr m full outer join luserTKD l on m.metroName = l.luser_addr 
+		where m.metroName like '%'||#{luser_addr}||'%' and luser_id =#{luser_id}
+	</select>
+	
+	
+	<!--리스트상세에서사용 -->
+	<select id="TUSER_GETONE" resultType="tusertkd" parameterType="tusertkd">
+		select * from tuserTKD where tuser_id=#{tuser_id}
+	</select>
+	
+		<!--리스트상세지도에서사용 -->
+	<select id="TADDR_GETONE" resultType="tusertkd" parameterType="tusertkd">
+		select m.metronew from addr m full outer join tuserTKD t on m.metroName = t.tuser_addr 
+		where m.metroName like '%'||#{tuser_addr}||'%' and tuser_id =#{tuser_id}
+	</select>
+	
+	<update id="LuserEdit" parameterType="lusertkd">
+		update tuserTKD set luser_learnday=#{luser_learnday}, luser_time=#{luser_time},luser_addr=#{luser_addr},luser_etc=#{luser_etc}
+		where luser_id=#{luser_id}
+	</update>
+	<update id="TuserEdit" parameterType="tusertkd">
+		update tuserTKD set tuser_learnday=#{tuser_learnday}, tuser_time=#{tuser_time},tuser_addr=#{tuser_addr},tuser_etc=#{tuser_etc}
+		where tuser_id=#{tuser_id}
+	</update>
+</mapper>
